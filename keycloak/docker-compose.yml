@@ -39,7 +39,7 @@ services:
       # 1) custom-spi 프로젝트에서 Gradle 빌드
       #    cd custom-spi && ./gradlew build
       # 2) 필요시 아래 라인 사용
-      - ./custom-spi/build/libs/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
+      - ./custom-spi/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
 
     ports:
       # 컨테이너 내부 포트도 8082로 변경
