@@ -40,7 +40,7 @@ services:
 
     ports:
       # 필요 시 포트 변경 가능 (예: 8081:8080)
-      - "8080:8080"
+      - "8082:8080"
 
     healthcheck:
       test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
