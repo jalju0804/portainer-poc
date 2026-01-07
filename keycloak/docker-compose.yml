@@ -17,12 +17,11 @@ services:
       KEYCLOAK_ADMIN: ${KC_ADMIN_USER:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
 
-      # 기타 권장 설정 및 호스트네임
-      # 예: /etc/hosts 에서 keycloak 도메인 -> 해당 노드 IP 매핑
-      KC_HOSTNAME: ${KC_HOSTNAME:-keycloak}
       KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
+      KC_HTTP_PORT: ${KC_HTTP_PORT:-8082}
 
     # Git으로 관리하는 realm JSON을 부팅 시 자동 import
     command: ["start-dev", "--import-realm"]
@@ -39,11 +38,11 @@ services:
       # - ./custom-spi/build/libs/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
 
     ports:
-      # 필요 시 포트 변경 가능 (예: 8081:8080)
-      - "8082:8080"
+      # 컨테이너 내부 포트도 8082로 변경
+      - "8082:8082"
 
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8082"]
       interval: 10s
       timeout: 5s
       retries: 10
