@@ -17,6 +17,10 @@ services:
       KEYCLOAK_ADMIN: ${KC_ADMIN_USER:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
 
+      # 호스트/포트 정합성
+      KC_HOSTNAME: ${KC_HOSTNAME:-172.31.0.214}
+      KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT:-8082}
+      KC_PROXY: ${KC_PROXY_MODE:-edge}
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HTTP_ENABLED: "true"
@@ -27,15 +31,15 @@ services:
     command: ["start-dev", "--import-realm"]
 
     volumes:
-      # `keycloak/realms` 폴더에 있는 realm JSON들을 코드로 관리
+      # realm JSON을 코드로 관리 (Portainer Stack에서도 bind mount가 붙도록 상대경로 그대로 사용)
       - ./realms:/opt/keycloak/data/import:ro
 
       # Custom SPI JAR (예: ./custom-spi/build/libs/custom-spi-1.0.0.jar)을
       # Keycloak providers 디렉터리에 마운트하여 활성화
       # 1) custom-spi 프로젝트에서 Gradle 빌드
       #    cd custom-spi && ./gradlew build
-      # 2) 아래 주석 해제
-      # - ./custom-spi/build/libs/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
+      # 2) 필요시 아래 라인 사용
+      - ./custom-spi/build/libs/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
 
     ports:
       # 컨테이너 내부 포트도 8082로 변경
