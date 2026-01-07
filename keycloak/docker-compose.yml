@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.3
+    container_name: keycloak
+    restart: always
+
+    environment:
+      # DB 설정 (공용 Postgres 인스턴스를 사용)
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KC_DB_NAME:-keycloak}
+      KC_DB_USERNAME: ${KC_DB_USER:-keycloak}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+
+      # 관리자 계정
+      KEYCLOAK_ADMIN: ${KC_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+
+      # 기타 권장 설정 및 호스트네임
+      # 예: /etc/hosts 에서 keycloak 도메인 -> 해당 노드 IP 매핑
+      KC_HOSTNAME: ${KC_HOSTNAME:-keycloak}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+
+    # Git으로 관리하는 realm JSON을 부팅 시 자동 import
+    command: ["start-dev", "--import-realm"]
+
+    volumes:
+      # `keycloak/realms` 폴더에 있는 realm JSON들을 코드로 관리
+      - ./realms:/opt/keycloak/data/import:ro
+
+      # Custom SPI JAR (예: ./custom-spi/build/libs/custom-spi-1.0.0.jar)을
+      # Keycloak providers 디렉터리에 마운트하여 활성화
+      # 1) custom-spi 프로젝트에서 Gradle 빌드
+      #    cd custom-spi && ./gradlew build
+      # 2) 아래 주석 해제
+      # - ./custom-spi/build/libs/custom-spi-1.0.0.jar:/opt/keycloak/providers/custom-spi.jar:ro
+
+    ports:
+      # 필요 시 포트 변경 가능 (예: 8081:8080)
+      - "8080:8080"
+
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - aolda-postgres-net
+
+networks:
+  # 공용 Postgres 스택에서 생성한 네트워크를 재사용
+  aolda-postgres-net:
+    external: true
+
+

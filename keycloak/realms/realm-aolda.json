@@ -1,0 +1,66 @@
+{
+  "realm": "aolda",
+  "enabled": true,
+  "displayName": "AOLDA Realm",
+
+  "users": [],
+
+  "groups": [
+    {
+      "name": "Ajou_Univ",
+      "path": "/Ajou_Univ",
+      "attributes": {
+        "description": [
+          "아주대학교 구성원(학생/교직원 등) 공통 상위 그룹"
+        ]
+      },
+      "subGroups": [
+        {
+          "name": "Aolda_Member",
+          "path": "/Ajou_Univ/Aolda_Member",
+          "attributes": {
+            "description": [
+              "AOLDA 서비스 일반 사용자(아주대 구성원)"
+            ]
+          },
+          "realmRoles": [],
+          "clientRoles": {}
+        },
+        {
+          "name": "Aolda_Admin",
+          "path": "/Ajou_Univ/Aolda_Admin",
+          "attributes": {
+            "description": [
+              "AOLDA 서비스 관리자(운영/관리 권한 보유)"
+            ]
+          },
+          "realmRoles": [],
+          "clientRoles": {}
+        }
+      ],
+      "realmRoles": [],
+      "clientRoles": {}
+    },
+    {
+      "name": "External_Users",
+      "path": "/External_Users",
+      "attributes": {
+        "description": [
+          "성수님 등 아주대학교 소속이 아닌 외부 사용자용 상위 그룹",
+          "외부 사용자는 추후 LDAP 등 별도 인증원 연동 시 다른 realm로 분리 고려"
+        ]
+      },
+      "realmRoles": [],
+      "clientRoles": {}
+    }
+  ],
+
+  "clients": [],
+
+  "roles": {
+    "realm": [],
+    "client": {}
+  }
+}
+
+

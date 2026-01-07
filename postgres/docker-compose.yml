@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: aolda-postgres
+    restart: always
+
+    environment:
+      # 공용 Postgres 인스턴스 기본 설정
+      # 여러 애플리케이션이 공유할 수 있는 기본 DB/계정
+      POSTGRES_DB: ${PG_DEFAULT_DB:-aolda}
+      POSTGRES_USER: ${PG_SUPERUSER:-aolda}
+      POSTGRES_PASSWORD: ${PG_SUPERUSER_PASSWORD}
+
+    volumes:
+      # 로컬 Docker 볼륨을 사용 (Ceph 미사용)
+      # 프로덕션에서 호스트 경로나 다른 스토리지를 쓰고 싶으면 여기만 교체하면 됨
+      - aolda-postgres-data:/var/lib/postgresql/data
+
+    ports:
+      # 내부 전용으로 쓸 경우 포트 매핑은 생략 가능
+      - "5432:5432"
+
+    networks:
+      - aolda-postgres-net
+
+    deploy:
+      # 동일 Ceph 경로를 바라보는 인스턴스가 2개 이상 뜨지 않도록 강제
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+volumes:
+  aolda-postgres-data:
+
+networks:
+  aolda-postgres-net:
+    driver: bridge
+
+
