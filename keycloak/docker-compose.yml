@@ -49,11 +49,11 @@ services:
       retries: 10
 
     networks:
-      - aolda-postgres-net
+      - prod-deploy_aolda-postgres-net
 
 networks:
   # 공용 Postgres 스택에서 생성한 네트워크를 재사용
-  aolda-postgres-net:
+  prod-deploy_aolda-postgres-net:
     external: true
 
 
